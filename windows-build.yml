@@ -1,0 +1,30 @@
+name: Windows build (compile only)
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: UI and source regression checks
+        run: |
+          python tools/static_check.py
+          python tools/test_ui_regression.py
+      - name: Restore
+        run: dotnet restore .\USBGuardian.sln
+      - name: Build
+        run: dotnet build .\USBGuardian.sln -c Release --no-restore
+      - name: Verify outputs
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'USBGuardian.App\bin\Release\net10.0-windows\USBGuardian.App.exe')) { throw 'App.exe missing' }
+          if (-not (Test-Path 'USBGuardian.App\bin\Release\net10.0-windows\SafeLab\USBGuardian.Analyzer.exe')) { throw 'Analyzer.exe missing' }
+      - name: Upload compiled build for review (not signed)
+        uses: actions/upload-artifact@v4
+        with:
+          name: USBGuardian-unsigned-Release
+          path: USBGuardian.App/bin/Release/net10.0-windows/

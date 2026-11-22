@@ -1,0 +1,990 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:USBGuardian.App.UI" x:Class="USBGuardian.App.MainWindow" Title="USB Guardian" Icon="Assets/USBGuardian.ico" Width="1100" Height="745" MinWidth="880" MinHeight="620" SnapsToDevicePixels="True" UseLayoutRounding="True" FontSize="13" WindowStartupLocation="CenterScreen" Background="{DynamicResource CanvasBrush}" FontFamily="Segoe UI Variable, Microsoft JhengHei UI, Segoe UI" Foreground="{DynamicResource TextBrush}">
+    <Window.Resources>
+        <!-- V3.5.8: remove the global Expander/TreeViewItem templates introduced in 3.5.7.
+             Native WPF templates retain correct disclosure and keyboard behavior.
+             Explicit foreground settings on affected Expanders remain in place. -->
+        <SolidColorBrush x:Key="Ink" Color="#1B2942"/>
+        <SolidColorBrush x:Key="Muted" Color="#687993"/>
+        <SolidColorBrush x:Key="Accent" Color="#2171E5"/>
+        <SolidColorBrush x:Key="Line" Color="#E0E7F1"/>
+        <Style TargetType="Button" x:Key="PrimaryButton">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value><ControlTemplate TargetType="Button">
+                    <ui:ContinuousBorder x:Name="Bg" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ui:ContinuousBorder>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bg" Property="Opacity" Value="0.9"/></Trigger>
+                        <Trigger Property="IsPressed" Value="True"><Setter TargetName="Bg" Property="Opacity" Value="0.78"/></Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource AccentTextBrush}"/><Setter TargetName="Bg" Property="BorderThickness" Value="2"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Bg" Property="Opacity" Value="0.45"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate></Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="SoftButton" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Foreground" Value="{DynamicResource SoftButtonTextBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource SoftButtonBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+        <Style TargetType="Button" x:Key="HomeQuickAction" BasedOn="{StaticResource SoftButton}">
+            <Setter Property="Padding" Value="9,4"/>
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+        <!-- Flat sections with a hairline divider: no dashboard cards or floating shadows. -->
+        <Style TargetType="Border" x:Key="Panel">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="15,14"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="SectionHeading">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+        </Style>
+        <Style TargetType="Button" x:Key="NavButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ui:ContinuousBorder x:Name="NavBg" Background="{TemplateBinding Background}" CornerRadius="7" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </ui:ContinuousBorder>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="NavBg" Property="Background" Value="{DynamicResource NavHoverBrush}"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="NavBg" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Native, compact list rows shared by History, Recent activity, and Quarantine. -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Margin" Value="1,1,1,2"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ui:ContinuousBorder x:Name="RowSurface" Background="Transparent" CornerRadius="7"
+                                BorderBrush="Transparent" BorderThickness="1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </ui:ContinuousBorder>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RowSurface" Property="Background" Value="{DynamicResource NavHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowSurface" Property="Background" Value="{DynamicResource NavSelectedBrush}"/>
+                                <Setter TargetName="RowSurface" Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="RowSurface" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Keep the native WPF tree template for safe startup; theme its inherited text and selection brushes. -->
+        <Style TargetType="TreeViewItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- Readable settings labels: never inherit the system's low-contrast foreground. -->
+        <Style x:Key="SettingsFieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,0,0,9"/>
+        </Style>
+        <Style x:Key="SettingsSectionTitle" TargetType="TextBlock" BasedOn="{StaticResource SectionHeading}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,17"/>
+        </Style>
+    <Style TargetType="TextBox"><Setter Property="Background" Value="{DynamicResource InputBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/><Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/></Style>
+<Style TargetType="ListBox"><Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/></Style>
+<Style x:Key="RoundedInput" TargetType="TextBox">
+    <Setter Property="Background" Value="{DynamicResource InputBrush}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TextBox">
+          <ui:ContinuousBorder x:Name="InputFrame" Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="10">
+            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" Focusable="False"/>
+          </ui:ContinuousBorder>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+              <Setter TargetName="InputFrame" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="InputFrame" Property="Opacity" Value="0.55"/></Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+</Style>
+
+
+        <!-- Theme-aware WPF ComboBox, including the dropdown popup and selection. -->
+        <Style x:Key="GuardianComboItem" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Padding" Value="11,9"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <ui:ContinuousBorder x:Name="ItemBg" Background="Transparent" CornerRadius="9" Margin="3,1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </ui:ContinuousBorder>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBg" Property="Background" Value="{DynamicResource SubtleBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBg" Property="Background" Value="{DynamicResource SoftButtonBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.45"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource InputBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource GuardianComboItem}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="DropToggle" Focusable="False"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Background="Transparent" BorderThickness="0">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <ui:ContinuousBorder x:Name="Chrome" Background="{DynamicResource InputBrush}"
+                                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                                CornerRadius="10" Padding="12,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0" IsHitTestVisible="False" Margin="0,0,10,0"
+                                                    TextElement.FontSize="{TemplateBinding FontSize}"
+                                                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                    Content="{Binding SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                    ContentTemplate="{Binding SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                    TextElement.Foreground="{DynamicResource TextBrush}"/>
+                                                <Path Grid.Column="1" Width="10" Height="6" Stretch="Fill"
+                                                      Stroke="{DynamicResource MutedTextBrush}" StrokeThickness="1.5"
+                                                      Data="M 0 0 L 5 5 L 10 0" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </ui:ContinuousBorder>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Chrome" Property="Opacity" Value="0.5"/></Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True"
+                                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   StaysOpen="False" PopupAnimation="Fade" Focusable="False">
+                                <ui:ContinuousBorder Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1" CornerRadius="12" Padding="3" Margin="0,2,0,5"
+                                        MinWidth="{Binding ActualWidth, ElementName=DropToggle}">
+                                    <ScrollViewer MaxHeight="270" VerticalScrollBarVisibility="Auto"
+                                                  HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </ui:ContinuousBorder>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+<Style TargetType="TreeView"><Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/></Style>
+<Style TargetType="CheckBox"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/></Style>
+</Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="196"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation rail -->
+        <Border Grid.Column="0" Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+            <Grid Margin="9,17,9,14">
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="9,0,0,23">
+                    <Image Width="27" Height="27" Source="Assets/USBGuardian.png" Margin="0,0,10,0" Stretch="Uniform"/>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="USB Guardian" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
+                        <TextBlock Text="{DynamicResource Ui001}" FontSize="11" Foreground="{DynamicResource MutedTextBrush}" Margin="0,2,0,0"/></StackPanel>
+                </StackPanel>
+                <!-- The colored point reports notification/monitoring status, not a malware verdict. -->
+                <StackPanel Grid.Row="1" Margin="11,0,7,15">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" ToolTipService.InitialShowDelay="280" ToolTipService.ShowDuration="15000">
+                        <StackPanel.ToolTip>
+                            <ToolTip>
+                                <StackPanel MaxWidth="280" Margin="4">
+                                    <TextBlock x:Name="MonitorTooltipTitle" FontWeight="SemiBold" Text="監控中" FontSize="13"/>
+                                    <TextBlock x:Name="MonitorTooltipDetails" Text="USB 插入通知已啟用" TextWrapping="Wrap" Margin="0,5,0,0" FontSize="12"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </StackPanel.ToolTip>
+                        <Ellipse x:Name="MonitoringStatusDot" Width="8" Height="8" Fill="#249B73" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Ui003}" x:Name="SidebarStatus" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Margin="0,2,0,0" x:Name="SidebarNavPanel">
+                    
+                    <Button Tag="0" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 3,11 L 12,3 L 21,11 M 6,10 L 6,21 L 18,21 L 18,10 M 10,21 L 10,15 L 14,15 L 14,21" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource Ui006}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="1" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 4,5 L 8,5 L 10,8 L 20,8 L 20,19 L 4,19 Z M 4,10 L 20,10" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource Ui007}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="2" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 6,3 L 6,10 M 18,3 L 18,10 M 3,10 L 21,10 L 21,18 L 16,18 L 16,21 L 8,21 L 8,18 L 3,18 Z" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource Ui008}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="3" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 3,6 L 21,6 M 3,12 L 21,12 M 3,18 L 21,18 M 9,3 L 9,9 M 16,9 L 16,15 M 7,15 L 7,21" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource UiDeviceActionsTab}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="4" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 12,3 C 7,3 3,7 3,12 C 3,17 7,21 12,21 C 17,21 21,17 21,12 C 21,7 17,3 12,3 Z M 12,7 L 12,12 L 16,14" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource Ui009}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Tag="5" Style="{StaticResource NavButton}" Click="NavigateSidebar_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 12,3 L 14,5 L 17,4 L 18,7 L 21,8 L 20,11 L 21,14 L 18,16 L 17,19 L 14,19 L 12,21 L 10,19 L 7,19 L 6,16 L 3,14 L 4,11 L 3,8 L 6,7 L 7,4 L 10,5 Z M 12,9 C 10,9 9,10 9,12 C 9,14 10,15 12,15 C 14,15 15,14 15,12 C 15,10 14,9 12,9 Z" Width="17" Height="17" Stretch="Uniform" Fill="Transparent" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="0,0,12,0"/>
+                            <TextBlock Text="{DynamicResource Ui010}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Margin="4,0,4,0">
+                    <!-- Persistent support entry. Does not create or send a report until selected. -->
+                    <Button x:Name="ReportIssueButton" Click="ReportProblem_Click" Height="40" Margin="0,0,0,12"
+                            ToolTip="回報問題 / Report a problem" AutomationProperties.Name="回報問題 / Report a problem"
+                            Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
+                            HorizontalContentAlignment="Left" Padding="10,7">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M 3,5 Q 3,3 5,3 L 19,3 Q 21,3 21,5 L 21,15 Q 21,17 19,17 L 10,17 L 5,21 L 5,17 Q 3,17 3,15 Z M 12,7 L 12,11 M 12,14 L 12,14.2"
+                                  Stroke="{DynamicResource MutedTextBrush}" StrokeThickness="1.65" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" Fill="Transparent" Width="18" Height="18" Stretch="Uniform" Margin="0,0,10,0"/>
+                            <TextBlock Text="{DynamicResource UiReportProblem}" FontSize="13.5" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="USB Guardian" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="10,0,0,0"/>
+                    <TextBlock Text="{DynamicResource Ui011}" Foreground="{DynamicResource MutedTextBrush}" Margin="10,5,0,0" FontSize="11"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main content -->
+        <Grid Grid.Column="1" Background="{DynamicResource SurfaceBrush}" Margin="0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="24,22,24,11">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock x:Name="CurrentPageHeading" Text="USB Guardian" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}"/>
+                    <TextBlock x:Name="CurrentPageSubtitle" Text="{DynamicResource Ui012}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" Margin="0,4,0,0"/>
+                </StackPanel>
+
+            </Grid>
+            <Border Grid.Row="1" Visibility="Collapsed" Background="{DynamicResource SubtleBrush}" Padding="24,8,24,8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,1">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="7" Height="7" Fill="#219572" Margin="0,0,9,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusText" Text="{DynamicResource Ui013}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="SubtitleText" Text="{DynamicResource Ui014}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Border>
+            <!-- Left navigation is the only navigation. Tab headers are hidden intentionally. -->
+            <TabControl x:Name="MainTabs" Grid.Row="2" Margin="24,16,24,8" Background="Transparent" BorderThickness="0" SelectionChanged="MainTabs_SelectionChanged">
+                <TabControl.Template>
+                    <ControlTemplate TargetType="TabControl">
+                        <Border Background="Transparent">
+                            <ContentPresenter ContentSource="SelectedContent"/>
+                        </Border>
+                    </ControlTemplate>
+                </TabControl.Template>
+                <!-- Home: conventional utility overview, not a promotional hero/card stack. -->
+                <TabItem Header="{DynamicResource Ui006}">
+                  <Grid Margin="0,0,0,2">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="*" MinHeight="165"/>
+                      <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,8,0,20" Margin="0,0,0,16">
+                      <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                          <TextBlock Text="{DynamicResource Ui015}" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}"/>
+                          <TextBlock x:Name="HomeHeadlineText" Text="{DynamicResource Ui016}" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,7,0,5"/>
+                          <TextBlock x:Name="HomeAdviceText" Visibility="Collapsed" Text="{DynamicResource Ui017}" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                          <Button Content="{DynamicResource Ui007}" Click="HomeInspect_Click" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0"/>
+                          <Button Content="{DynamicResource Ui018}" Click="HomeDevices_Click" Style="{StaticResource SoftButton}"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Ui351HomeHint}" Style="{StaticResource SectionHeading}" Margin="0,0,0,10"/>
+                    <!-- Human-readable event rows. Primary actions appear on hover/keyboard focus. -->
+                    <Grid Grid.Row="2">
+                      <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                      <ui:ContinuousBorder Grid.Row="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="13">
+                        <ListBox x:Name="RecentList" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="RecentList_SelectionChanged"
+                                 AutomationProperties.Name="{DynamicResource Ui351HomeHint}">
+                          <ListBox.ItemTemplate>
+                            <DataTemplate>
+                              <Grid MinHeight="52" Margin="1,1,3,1">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="1,0,8,0">
+                                  <TextBlock Text="{Binding Title}" FontSize="13.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                  <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <TextBlock Text="{Binding TimeLabel}" FontFamily="Segoe UI Variable, Segoe UI" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding Summary}" TextTrimming="CharacterEllipsis" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" MaxWidth="330"/>
+                                  </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                  <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                                        <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </StackPanel.Style>
+                                  <Button Content="{DynamicResource UiHomeCheckAction}" ToolTip="{DynamicResource UiHomeCheckAction}" Style="{StaticResource HomeQuickAction}" Tag="{Binding}" Click="RecentInspect_Click" Margin="0,0,6,0"/>
+                                  <Button Content="{DynamicResource UiHomeDeviceAction}" ToolTip="{DynamicResource UiHomeDeviceAction}" Style="{StaticResource HomeQuickAction}" Tag="{Binding}" Click="RecentDeviceActions_Click"/>
+                                </StackPanel>
+                              </Grid>
+                            </DataTemplate>
+                          </ListBox.ItemTemplate>
+                        </ListBox>
+                      </ui:ContinuousBorder>
+                      <ui:ContinuousBorder Grid.Row="1" x:Name="HomeEventPreview" Visibility="Collapsed" CornerRadius="11"
+                                Background="{DynamicResource SubtleBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,9,0,0" Padding="13,9">
+                         <Grid>
+                           <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                           <TextBlock x:Name="HomeEventSummaryText" Grid.Column="0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,12,0"/>
+                           <Button Grid.Column="1" Content="{DynamicResource UiHomeFullDetails}" Click="RecentViewFull_Click" Style="{StaticResource HomeQuickAction}"/>
+                         </Grid>
+                      </ui:ContinuousBorder>
+                    </Grid>
+                    <Expander Grid.Row="3" Header="{DynamicResource Ui020}" FontSize="12" Foreground="{DynamicResource TextBrush}" Margin="0,15,0,2">
+                      <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="14" Margin="0,8,0,0">
+                        <UniformGrid Columns="3">
+                          <StackPanel><TextBlock Text="{DynamicResource Ui021}" FontSize="12"/><TextBlock x:Name="DriveCountText" Text="0" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                          <StackPanel><TextBlock Text="{DynamicResource Ui022}" FontSize="12"/><TextBlock x:Name="DeviceCountText" Text="—" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                          <StackPanel><TextBlock Text="{DynamicResource Ui023}" FontSize="12"/><TextBlock x:Name="WarningCountText" Text="0" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                        </UniformGrid>
+                      </Border>
+                    </Expander>
+                  </Grid>
+                </TabItem>
+<TabItem Header="{DynamicResource Ui007}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel Margin="0,4,0,8"><Grid Margin="0,0,0,0" Height="464">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Border Grid.Row="0" Style="{StaticResource Panel}" Margin="0,0,0,10" Padding="13,12">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox x:Name="DriveCombo" Grid.Column="0" Width="174" Height="42" FontSize="14" SelectionChanged="DriveCombo_SelectionChanged" Margin="0,0,8,0" VerticalContentAlignment="Center"/>
+                                    <Button x:Name="InspectDriveButton" Grid.Column="1" Content="{DynamicResource Ui027}" Style="{StaticResource PrimaryButton}" Click="InspectDrive_Click" Margin="0,0,8,0"/>
+                                    <Button x:Name="DefenderScanButton" Grid.Column="2" Content="{DynamicResource Ui028}" Style="{StaticResource SoftButton}" Click="DefenderScan_Click"/>
+                                </Grid>
+                                <TextBlock x:Name="DriveEmptyText" Text="{DynamicResource UiNoUsbConnected}" Visibility="Collapsed"
+                                           FontSize="14" Foreground="{DynamicResource MutedTextBrush}" Margin="0,10,0,0"/>
+                                <TextBlock x:Name="ScanOutcomeText" Text="{DynamicResource UiScanIdle}"
+                                           FontSize="13.5" Foreground="{DynamicResource MutedTextBrush}"
+                                           Margin="0,8,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Style="{StaticResource Panel}">
+                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource Ui029}" DockPanel.Dock="Top" Style="{StaticResource SectionHeading}" Margin="0,0,0,12"/>
+                                    <TreeView x:Name="FileTree" FontSize="14" BorderThickness="0" Foreground="{DynamicResource TextBrush}" SelectedItemChanged="FileTree_SelectedItemChanged">
+
+                                    </TreeView>
+                                </DockPanel>
+                            </Border>
+                            <Border Grid.Column="2" Style="{StaticResource Panel}">
+                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource Ui030}" DockPanel.Dock="Top" Style="{StaticResource SectionHeading}" Margin="0,0,0,12"/>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <TextBlock x:Name="FileDetailsText" Text="{DynamicResource Ui031}" TextWrapping="Wrap" FontSize="14" LineHeight="23" Foreground="{DynamicResource TextBrush}"/>
+                                    </ScrollViewer>
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="2" Margin="0,13,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock x:Name="FileSummaryText" Text="{DynamicResource Ui032}" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontSize="13.5" TextWrapping="Wrap" Margin="0,0,14,0"/>
+                            <Button Grid.Column="1" Content="{DynamicResource Ui033}" Style="{StaticResource PrimaryButton}" Click="SafeLabAnalyze_Click"/>
+                        </Grid>
+                    </Grid>
+                <Expander Header="{DynamicResource Ui034}" IsExpanded="True" Margin="0,12,0,0" x:Name="SafeLabPreviewSection"><StackPanel Margin="0,8,0,0">
+                            <!-- A single compact inspection header instead of stacked dashboard cards. -->
+                            <Border Style="{StaticResource Panel}" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="18"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                                                                        <TextBlock x:Name="SafeLabFileNameText" Text="{DynamicResource Ui035}" FontSize="15"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" Margin="0,6,0,4"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock x:Name="SafeLabStatusText" Text="{DynamicResource Ui036}"
+                                                       Foreground="{DynamicResource MutedTextBrush}" FontSize="13.5" TextWrapping="Wrap" LineHeight="21"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="{DynamicResource Ui038}" FontSize="13.5"
+                                                       FontWeight="Medium" Foreground="{DynamicResource TextBrush}"/>
+                                            <TextBlock x:Name="SafeLabKindText" Text="{DynamicResource Ui039}" FontSize="16"
+                                                       Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Margin="0,5,0,4" TextWrapping="Wrap"/>
+                                            <TextBlock x:Name="SafeLabKindExplainText" Text="{DynamicResource Ui040}" FontSize="13"
+                                                       Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ui:ContinuousBorder x:Name="SafeLabMismatchPanel" Background="{DynamicResource WarningLightBrush}"
+                                            CornerRadius="10" Padding="10" Margin="0,10,0,0" Visibility="Collapsed">
+                                        <TextBlock x:Name="SafeLabMismatchText" Foreground="{DynamicResource WarningTextBrush}"
+                                                   TextWrapping="Wrap" FontSize="12" FontWeight="SemiBold"/>
+                                    </ui:ContinuousBorder>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Panel}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,12">
+                                        <TextBlock x:Name="SafeLabPreviewModeText" Text="{DynamicResource Ui041}" Style="{StaticResource SectionHeading}" FontSize="16"/>
+                                        <TextBlock Text="" DockPanel.Dock="Right" HorizontalAlignment="Right" Foreground="{DynamicResource MutedTextBrush}" FontSize="11"/>
+                                    </DockPanel>
+                                    <ui:ContinuousBorder Background="{DynamicResource SubtleBrush}" CornerRadius="14" MinHeight="278" Padding="14">
+                                        <Grid MinHeight="250">
+                                            <Image x:Name="SafeLabPreviewImage" Stretch="Uniform" Visibility="Collapsed"/>
+                                            <ui:ContinuousBorder x:Name="SafeLabTextPanel" Background="{DynamicResource SubtleBrush}" CornerRadius="12" Padding="14" Visibility="Collapsed">
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Ui042}" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,10"/>
+                                                    <TextBox x:Name="SafeLabTextText" IsReadOnly="True" MinHeight="260" MaxHeight="480" FontFamily="Consolas" FontSize="14" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="Transparent"/>
+                                                </DockPanel>
+                                            </ui:ContinuousBorder>
+                                            <TextBlock x:Name="SafeLabPreviewHint" Text="{DynamicResource Ui043}" Foreground="{DynamicResource TextBrush}" FontSize="15" FontWeight="Medium" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="380"/>
+                                        </Grid>
+                                    </ui:ContinuousBorder>
+                                    <TextBlock x:Name="SafeLabImageNote" Text="{DynamicResource Ui044}" Foreground="{DynamicResource MutedTextBrush}" FontSize="13" TextWrapping="Wrap" Margin="0,9,0,0"/>
+
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Panel}" Margin="0,0,0,13">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource UiPostReviewTitle}" Style="{StaticResource SectionHeading}" Margin="0,0,0,10"/>
+                                    <WrapPanel>
+                                        <Button x:Name="DeletePreviewedFileButton" Content="{DynamicResource UiDeleteReviewed}" IsEnabled="False"
+                                                Style="{StaticResource SoftButton}" Click="DeletePreviewedFile_Click" Margin="0,0,10,7"/>
+                                        <Button Content="{DynamicResource UiManageDevice}" Style="{StaticResource SoftButton}"
+                                                Click="ManageDeviceFromPreview_Click" Margin="0,0,0,7"/>
+                                    </WrapPanel>
+                                    <TextBlock Text="{DynamicResource UiPostReviewHint}" Foreground="{DynamicResource MutedTextBrush}"
+                                               TextWrapping="Wrap" FontSize="11" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Expander Header="{DynamicResource Ui045}" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="14" FontSize="13">
+                                <StackPanel Margin="3,12,3,3">
+                                    <TextBlock Text="{DynamicResource Ui046}" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}"/>
+                                    <TextBlock x:Name="SafeLabHashText" Text="{DynamicResource Ui047}" FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" Margin="0,7,0,12"/>
+                                    <TextBlock Text="{DynamicResource Ui048}" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}"/>
+                                    <TextBox x:Name="SafeLabHexText" IsReadOnly="True" Height="165" FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{DynamicResource SubtleBrush}" BorderThickness="0" Padding="10" Margin="0,7,0,0"/>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </Expander></StackPanel></ScrollViewer></TabItem>
+                <TabItem Header="{DynamicResource Ui008}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="4,12,4,12">
+                            <!-- One clear heading: current need, not 100+ technical entries. -->
+                            <Grid Margin="0,2,0,15">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Ui049}" FontWeight="SemiBold" FontSize="21" Foreground="{DynamicResource TextBrush}"/>
+                                    <TextBlock x:Name="DeviceOverviewText" Text="{DynamicResource Ui050}"
+                                               Foreground="{DynamicResource TextBrush}" FontSize="13" Margin="0,7,0,2" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="DeviceStatusText" Text="{DynamicResource Ui051}"
+                                               Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="{DynamicResource Ui053}" Click="RefreshDevices_Click"
+                                        Style="{StaticResource SoftButton}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="11*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="9*"/></Grid.ColumnDefinitions>
+                                <!-- Device choices: compact rows, one accent only when something needs review. -->
+                                <ui:ContinuousBorder Grid.Column="0" Style="{StaticResource Panel}" CornerRadius="14" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource UiDevBrowseTitle}" Style="{StaticResource SectionHeading}"/>
+                                        <TextBlock Text="{DynamicResource UiDevBrowseHint}" FontSize="12"
+                                                   Foreground="{DynamicResource MutedTextBrush}" Margin="0,5,0,10" TextWrapping="Wrap"/>
+                                        <TextBox x:Name="DeviceSearchBox" Style="{StaticResource RoundedInput}" Height="38" Padding="11,9" Margin="0,0,0,8"
+                                                 TextChanged="DeviceSearchBox_TextChanged" ToolTip="{DynamicResource Ui070}"/>
+                                        <TextBlock Text="{DynamicResource UiOriginFilterTitle}" FontSize="11" Foreground="{DynamicResource MutedTextBrush}" Margin="0,1,0,5"/>
+                                        <ComboBox x:Name="DeviceOriginFilter" Height="38" Margin="0,0,0,10"
+                                                  SelectedIndex="0" SelectionChanged="DeviceOriginFilter_SelectionChanged">
+                                            <ComboBoxItem Content="{DynamicResource UiOriginAll}" Tag="全部來源"/>
+                                            <ComboBoxItem Content="{DynamicResource UiOriginNew}" Tag="本次新增"/>
+                                            <ComboBoxItem Content="{DynamicResource UiOriginUsb}" Tag="可能外接"/>
+                                            <ComboBoxItem Content="{DynamicResource UiOriginSystem}" Tag="系統／驅動"/>
+                                            <ComboBoxItem Content="{DynamicResource UiOriginUnknown}" Tag="來源未明"/>
+                                        </ComboBox>
+                                        <Expander Header="{DynamicResource UiAdditionalFilters}" IsExpanded="False"
+                                                  Margin="0,0,0,8" Foreground="{DynamicResource TextBrush}" FontSize="12">
+                                            <StackPanel Margin="2,10,2,5">
+                                                <ComboBox x:Name="DeviceAttentionFilter" Height="38" Margin="0,0,0,8"
+                                                          SelectedIndex="0" SelectionChanged="DeviceAttentionFilter_SelectionChanged">
+                                                    <ComboBoxItem Content="{DynamicResource Ui055}" Tag="全部狀態"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui056}" Tag="需要確認"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui057}" Tag="新觀察到"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui058}" Tag="有熟悉紀錄"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui059}" Tag="已標記不信任"/>
+                                                </ComboBox>
+                                                <ComboBox x:Name="DeviceCategoryFilter" Height="38" Margin="0,0,0,8"
+                                                          SelectedIndex="0" SelectionChanged="DeviceCategoryFilter_SelectionChanged">
+                                                    <ComboBoxItem Content="{DynamicResource Ui060}" Tag="全部類別"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui061}" Tag="音訊與耳機"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui062}" Tag="藍牙裝置"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui063}" Tag="鍵盤與滑鼠"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui064}" Tag="儲存與讀卡裝置"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui065}" Tag="相機與影像"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui066}" Tag="網路介面"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui067}" Tag="USB 控制器與集線器"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui068}" Tag="其他輸入裝置（HID）"/>
+                                                    <ComboBoxItem Content="{DynamicResource Ui069}" Tag="其他裝置"/>
+                                                </ComboBox>
+                                                <CheckBox x:Name="DeviceHideSystemCheck" IsChecked="True"
+                                                          Content="{DynamicResource Ui071}" Margin="0,3,0,0"
+                                                          Checked="DeviceHideSystemCheck_Changed" Unchecked="DeviceHideSystemCheck_Changed"/>
+                                            </StackPanel>
+                                        </Expander>
+                                        <TextBlock x:Name="DeviceCategorySummary" Text="{DynamicResource Ui072}"
+                                                   Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,0,0,7"/>
+                                        <Grid>
+                                            <ListBox x:Name="DeviceList" Height="315" BorderThickness="0"
+                                                     SelectionChanged="DeviceList_SelectionChanged"
+                                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Setter Property="Padding" Value="0"/>
+                                                        <Setter Property="Margin" Value="0,2,0,2"/>
+                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="ListBoxItem">
+                                                                    <ui:ContinuousBorder x:Name="ItemSurface" Background="Transparent" CornerRadius="7" Padding="11,9">
+                                                                        <ContentPresenter/>
+                                                                    </ui:ContinuousBorder>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsSelected" Value="True">
+                                                                            <Setter TargetName="ItemSurface" Property="Background" Value="{DynamicResource SoftButtonBrush}"/>
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="ItemSurface" Property="Background" Value="{DynamicResource SubtleBrush}"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+                                                <ListBox.GroupStyle>
+                                                    <GroupStyle>
+                                                        <GroupStyle.HeaderTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold"
+                                                                           Foreground="{DynamicResource MutedTextBrush}" Margin="9,14,0,7"/>
+                                                            </DataTemplate>
+                                                        </GroupStyle.HeaderTemplate>
+                                                    </GroupStyle>
+                                                </ListBox.GroupStyle>
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                                                                       Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis"/>
+                                                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                                <TextBlock Text="{Binding LocalizedCategory}" FontSize="11"
+                                                                           Foreground="{DynamicResource MutedTextBrush}"/>
+                                                                <TextBlock Text=" · " FontSize="11" Foreground="{DynamicResource MutedTextBrush}"/>
+                                                                <TextBlock Text="{Binding LocalizedAttention}" FontSize="11" TextTrimming="CharacterEllipsis">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding AttentionLevel}" Value="2">
+                                                                                    <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <TextBlock x:Name="DeviceEmptyStateText" Text="{DynamicResource UiDeviceEmpty}"
+                                                       Visibility="Collapsed" TextAlignment="Center" MaxWidth="240"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource MutedTextBrush}" FontSize="13" IsHitTestVisible="False"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </ui:ContinuousBorder>
+                                <!-- Details only appear after selection; no fake orange warning. -->
+                                <ui:ContinuousBorder Grid.Column="2" Style="{StaticResource Panel}" CornerRadius="14" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource UiDevDetailTitle}" Style="{StaticResource SectionHeading}" Margin="0,0,0,15"/>
+                                        <TextBlock x:Name="DeviceSelectHint" Text="{DynamicResource UiDeviceSelectFirst}"
+                                                   Foreground="{DynamicResource MutedTextBrush}" FontSize="13" TextWrapping="Wrap"
+                                                   Margin="0,18,0,22"/>
+                                        <StackPanel x:Name="DeviceDetailsContent" Visibility="Collapsed">
+                                            <TextBlock x:Name="DeviceSelectedNameText" FontWeight="SemiBold" FontSize="18"
+                                                       Text="{DynamicResource Ui074}" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                            <TextBlock x:Name="DeviceSelectedCategoryText" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,6"/>
+                                            <TextBlock x:Name="DeviceOriginText" Text="{DynamicResource Ui075}"
+                                                       FontSize="11" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+                                            <ui:ContinuousBorder Background="{DynamicResource SubtleBrush}" CornerRadius="12" Padding="12" Margin="0,0,0,15">
+                                                <StackPanel>
+                                                    <TextBlock Text="{DynamicResource UiDevReviewStatus}" FontSize="11" Foreground="{DynamicResource MutedTextBrush}"/>
+                                                    <TextBlock x:Name="DeviceRiskText" Text="{DynamicResource Ui077}"
+                                                               FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                                </StackPanel>
+                                            </ui:ContinuousBorder>
+                                            <TextBlock Text="{DynamicResource Ui080}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="DevicePurposeText" Text="{DynamicResource Ui081}" FontSize="12"
+                                                       Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+                                            <TextBlock Text="{DynamicResource Ui351DeviceStatus}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="DeviceActionText" TextWrapping="Wrap" FontSize="12"
+                                                       Foreground="{DynamicResource TextBrush}" Margin="0,0,0,14"/>
+                                            <Expander Header="{DynamicResource UiDevMoreDetails}" IsExpanded="False" FontSize="12">
+                                                <StackPanel Margin="4,9,4,3">
+                                                    <TextBlock x:Name="DeviceProtectionText" Text="{DynamicResource Ui079}" FontSize="11"
+                                                               Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,9"/>
+                                                    <TextBlock x:Name="DeviceTechnicalText" FontSize="11" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </Expander>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ui:ContinuousBorder>
+                            </Grid>
+                            <ui:ContinuousBorder Style="{StaticResource Panel}" Margin="0,14,0,0" CornerRadius="12" BorderThickness="0">
+                                <Button Content="{DynamicResource UiOpenDeviceActions}" Style="{StaticResource SoftButton}"
+                                        HorizontalAlignment="Left" Click="NavigateDeviceActions_Click"/>
+                            </ui:ContinuousBorder>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <!-- Device controls: a short decision path, advanced functions only on demand. -->
+                <TabItem Header="{DynamicResource UiDeviceActionsTab}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,3,0,20" MaxWidth="790" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{DynamicResource Ui351ChooseDevice}" Style="{StaticResource SectionHeading}" Margin="0,0,0,10"/>
+                            <Grid Margin="0,0,0,18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="ActionDeviceCombo" Grid.Column="0" MinHeight="42" DisplayMemberPath="Name"
+                                          SelectionChanged="ActionDeviceCombo_SelectionChanged"/>
+                                <Button Grid.Column="1" Content="{DynamicResource Ui053}" Margin="9,0,0,0"
+                                        Style="{StaticResource SoftButton}" Click="RefreshDevices_Click"/>
+                            </Grid>
+                            <ui:ContinuousBorder Background="{DynamicResource SubtleBrush}"
+                                                 BorderBrush="{DynamicResource BorderBrush}"
+                                                 BorderThickness="1" CornerRadius="16" Padding="18,15" Margin="0,0,0,18">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Ui351DeviceStatus}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11.5"/>
+                                    <TextBlock x:Name="ActionStatusHeadline" Text="{DynamicResource Ui351StatusReady}"
+                                               FontSize="18" FontWeight="SemiBold" Margin="0,6,0,5" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="ActionDeviceContextText" Text="{DynamicResource Ui351EmptyState}"
+                                               Foreground="{DynamicResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="ActionStatusNote" Text="" Foreground="{DynamicResource MutedTextBrush}"
+                                               FontSize="11.5" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </ui:ContinuousBorder>
+                            <TextBlock Text="{DynamicResource Ui351DeviceControlGuide}" Foreground="{DynamicResource MutedTextBrush}"
+                                       FontSize="12" Margin="0,0,0,12"/>
+                            <ui:ContinuousBorder Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                                                 BorderThickness="1" CornerRadius="14" Padding="17,15" Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,18,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{DynamicResource Ui351ReminderTitle}" Style="{StaticResource SectionHeading}"/>
+                                        <TextBlock Text="{DynamicResource Ui351ReminderDesc}" Margin="0,6,0,0"
+                                                   Foreground="{DynamicResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <Button x:Name="MarkAttentionActionButton" Grid.Column="1" Content="{DynamicResource Ui351ReminderAction}"
+                                            Style="{StaticResource SoftButton}" Click="MarkUntrusted_Click" VerticalAlignment="Center"/>
+                                </Grid>
+                            </ui:ContinuousBorder>
+                            <ui:ContinuousBorder Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                                                 BorderThickness="1" CornerRadius="14" Padding="17,15" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,18,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{DynamicResource Ui351DisableTitle}" Style="{StaticResource SectionHeading}"/>
+                                        <TextBlock Text="{DynamicResource Ui351DisableDesc}" Margin="0,6,0,0"
+                                                   Foreground="{DynamicResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <Button x:Name="DisableStorageActionButton" Grid.Column="1" Content="{DynamicResource Ui351DisableAction}"
+                                            Style="{StaticResource PrimaryButton}" Click="DisableUsbStorage_Click" VerticalAlignment="Center"
+                                            IsEnabled="False"/>
+                                </Grid>
+                            </ui:ContinuousBorder>
+                            <Expander Header="{DynamicResource Ui351MoreActions}" IsExpanded="False" Margin="0,10,0,0"
+                                      Foreground="{DynamicResource TextBrush}" FontSize="13">
+                                <ui:ContinuousBorder Background="{DynamicResource SubtleBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                                                     BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,12,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Ui351OtherHint}" Foreground="{DynamicResource MutedTextBrush}"
+                                                   FontSize="12" TextWrapping="Wrap" Margin="0,0,0,14"/>
+                                        <TextBlock Text="{DynamicResource UiDevNicknameLabel}" FontSize="12" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="NicknameBox" Style="{StaticResource RoundedInput}" Height="36" Padding="10,7" Margin="0,0,0,10" ToolTip="{DynamicResource Ui088}"/>
+                                        <WrapPanel Margin="0,0,0,10">
+                                            <Button Content="{DynamicResource Ui087}" Style="{StaticResource SoftButton}" Click="MarkFamiliar_Click" Margin="0,0,8,8"/>
+                                            <Button Content="{DynamicResource Ui086}" Style="{StaticResource SoftButton}" Click="UnmarkFamiliar_Click" Margin="0,0,8,8"/>
+                                            <Button Content="{DynamicResource Ui090}" Style="{StaticResource SoftButton}" Click="ClearUntrusted_Click" Margin="0,0,8,8"/>
+                                            <Button Content="{DynamicResource Ui085}" Style="{StaticResource SoftButton}" Click="ExportReport_Click" Margin="0,0,8,8"/>
+                                            <Button Content="{DynamicResource UiChooseFromDevices}" Style="{StaticResource SoftButton}" Click="NavigateToDevices_Click" Margin="0,0,8,8"/>
+                                        </WrapPanel>
+                                        <Separator Margin="0,0,0,13"/>
+                                        <TextBlock Text="{DynamicResource Ui351RecoveryTitle}" Style="{StaticResource SectionHeading}" Margin="0,0,0,10"/>
+                                        <WrapPanel>
+                                            <ComboBox x:Name="DisabledStorageCombo" Width="280" Height="38" Margin="0,0,10,8"/>
+                                            <Button Content="{DynamicResource Ui093}" Click="EnableUsbStorage_Click"
+                                                    Style="{StaticResource SoftButton}" Margin="0,0,0,8"/>
+                                        </WrapPanel>
+                                        <TextBlock Text="{DynamicResource Ui351NotSupported}" FontSize="11.5"
+                                                   Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,7,0,0"/>
+                                    </StackPanel>
+                                </ui:ContinuousBorder>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <!-- Activity: actual desktop work area, two lists, inline command bars, zero dashboard cards. -->
+                <TabItem Header="{DynamicResource Ui009}">
+                  <Grid Margin="0,0,0,3">
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="3*" MinHeight="165"/>
+                      <RowDefinition Height="12"/>
+                      <RowDefinition Height="2*" MinHeight="138"/>
+                      <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{DynamicResource Ui096}"
+                               Foreground="{DynamicResource MutedTextBrush}" FontSize="12"
+                               Margin="0,0,0,12" TextWrapping="Wrap"/>
+                    <!-- Alerts: title + short description on the left; actions in a compact toolbar. -->
+                    <Grid Grid.Row="1">
+                      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                      <Grid Grid.Row="0" Margin="0,0,0,9">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                          <TextBlock Text="{DynamicResource UiAlertCenter}" Style="{StaticResource SectionHeading}"/>
+                          <TextBlock x:Name="AlertSummaryText" Text="" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                          <Button Content="{DynamicResource UiReviewAlert}" Click="ReviewAlert_Click" Style="{StaticResource PrimaryButton}" Margin="0,0,7,0"/>
+                          <Button Content="{DynamicResource UiMarkRead}" Click="MarkAlertRead_Click" Style="{StaticResource SoftButton}"/>
+                        </StackPanel>
+                      </Grid>
+                      <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="3*" MinWidth="190"/><ColumnDefinition Width="10"/><ColumnDefinition Width="2*" MinWidth="170"/></Grid.ColumnDefinitions>
+                        <ui:ContinuousBorder Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10">
+                          <ListBox x:Name="AlertList" BorderThickness="0" FontSize="12.5" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                   SelectionChanged="AlertList_SelectionChanged"/>
+                        </ui:ContinuousBorder>
+                        <ui:ContinuousBorder Grid.Column="2" Background="{DynamicResource SubtleBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="14,12">
+                          <!-- Full notification text remains readable even when it spans many lines. -->
+                          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                        PanningMode="VerticalOnly" CanContentScroll="False">
+                            <StackPanel>
+                              <TextBlock Text="{DynamicResource UiEventDetailHeader}" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,9"/>
+                              <TextBlock x:Name="AlertSelectedTitle" Text="{DynamicResource UiSelectAlert}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                              <TextBlock x:Name="AlertSelectedInfo" Text="" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,9"/>
+                              <TextBlock x:Name="AlertSelectedBody" Text="" FontSize="13" LineHeight="20" TextWrapping="Wrap"/>
+                            </StackPanel>
+                          </ScrollViewer>
+                        </ui:ContinuousBorder>
+                      </Grid>
+                    </Grid>
+                    <GridSplitter Grid.Row="2" Height="6" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                  Background="{DynamicResource BorderBrush}" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext"
+                                  />
+                    <!-- Quarantine: an ordinary list with a recover action, no oversized empty-state icon. -->
+                    <Grid Grid.Row="3">
+                      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                      <Grid Grid.Row="0" Margin="0,0,0,9">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                          <TextBlock Text="{DynamicResource UiQuarantineTitle}" Style="{StaticResource SectionHeading}"/>
+                          <TextBlock x:Name="QuarantineSummaryText" FontSize="11.5" Foreground="{DynamicResource MutedTextBrush}" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <WrapPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                          <Button Content="{DynamicResource UiRestoreQuarantine}" Click="RestoreQuarantine_Click" Style="{StaticResource SoftButton}" Margin="0,0,7,0"/>
+                          <Button Content="{DynamicResource UiDeleteQuarantine}" Click="RemoveQuarantine_Click" Style="{StaticResource SoftButton}" Margin="0,0,7,0"/>
+                          <Button Content="{DynamicResource UiRefreshQuarantine}" Click="RefreshQuarantine_Click" Style="{StaticResource SoftButton}"/>
+                        </WrapPanel>
+                      </Grid>
+                      <Border Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource SurfaceBrush}">
+                        <ListBox x:Name="QuarantineList" BorderThickness="0" FontSize="13" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                      </Border>
+                    </Grid>
+                    <Expander Grid.Row="4" x:Name="TechnicalLogExpander" Header="{DynamicResource UiTechnicalLog}" IsExpanded="False" FontSize="12" Margin="0,12,0,0">
+                      <Grid Margin="0,8,0,0" Height="204">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+                        <ui:ContinuousBorder Grid.Column="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="9">
+                          <ListBox x:Name="LogList" BorderThickness="0" FontSize="12" SelectionChanged="LogList_SelectionChanged"/>
+                        </ui:ContinuousBorder>
+                        <ui:ContinuousBorder Grid.Column="2" Background="{DynamicResource SubtleBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="9" Padding="12">
+                          <StackPanel>
+                            <TextBlock Text="{DynamicResource UiEventDetailHeader}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11"/>
+                            <TextBlock x:Name="LogDetailTitle" Text="{DynamicResource UiEventClickHint}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,8,0,5" FontSize="13"/>
+                            <TextBlock x:Name="LogDetailInfo" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,0,0,9"/>
+                            <TextBlock x:Name="LogDetailBody" Text="" TextWrapping="Wrap" FontSize="12"/>
+                          </StackPanel>
+                        </ui:ContinuousBorder>
+                      </Grid>
+                    </Expander>
+                  </Grid>
+                </TabItem>
+<TabItem Header="{DynamicResource Ui010}"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+ <StackPanel Margin="0,2,0,8" MaxWidth="680" HorizontalAlignment="Stretch">
+  <Border Style="{StaticResource Panel}" Margin="0,0,0,14">
+   <StackPanel>
+    <TextBlock Text="{DynamicResource Ui097}" Style="{StaticResource SettingsSectionTitle}"/>
+    <TextBlock Text="{DynamicResource Ui098}" Style="{StaticResource SettingsFieldLabel}"/>
+    <ComboBox x:Name="ThemeChoice" Height="42" FontSize="14.5" FontWeight="Medium" Margin="0,0,0,19" SelectionChanged="ThemeChoice_SelectionChanged">
+     <ComboBoxItem Tag="system" Content="{DynamicResource Ui099}"/><ComboBoxItem Tag="light" Content="{DynamicResource Ui100}"/><ComboBoxItem Tag="dark" Content="{DynamicResource Ui101}"/>
+    </ComboBox>
+    <TextBlock Text="{DynamicResource Ui102}" Style="{StaticResource SettingsFieldLabel}"/>
+    <ComboBox x:Name="LanguageChoice" Height="42" FontSize="14.5" FontWeight="Medium" SelectionChanged="LanguageChoice_SelectionChanged">
+     <ComboBoxItem Tag="zh-TW" Content="{DynamicResource Ui103}"/><ComboBoxItem Tag="en" Content="English"/>
+    </ComboBox>
+   </StackPanel>
+  </Border>
+  <Border Style="{StaticResource Panel}" Margin="0,0,0,14">
+   <StackPanel>
+    <TextBlock Text="{DynamicResource Ui104}" Style="{StaticResource SectionHeading}" Margin="0,0,0,10"/>
+    <CheckBox x:Name="StartupCheck" Content="{DynamicResource Ui105}" Checked="StartupChanged" Unchecked="StartupChanged" FontSize="12"/>
+   </StackPanel>
+  </Border>
+  <Border Style="{StaticResource Panel}">
+   <StackPanel>
+    <TextBlock Text="{DynamicResource Ui107}" Style="{StaticResource SectionHeading}" Margin="0,0,0,12"/>
+    <WrapPanel>
+     <Button Content="{DynamicResource Ui108}" Click="OpenUsageNotice_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+     <Button Content="{DynamicResource Ui109}" Click="ShowResourceUsage_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+    </WrapPanel>
+    <Expander Header="{DynamicResource UiNotificationTools}" Margin="0,5,0,0" IsExpanded="False" FontSize="12" Foreground="{DynamicResource TextBrush}">
+      <WrapPanel Margin="0,9,0,0">
+        <Button Content="{DynamicResource Ui110}" Click="TestNotification_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+        <Button Content="{DynamicResource UiToastTestCaution}" Click="TestCautionNotification_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+        <Button Content="{DynamicResource UiToastTestCritical}" Click="TestCriticalNotification_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+        <Button Content="{DynamicResource Ui352TestLong}" Click="TestLongNotification_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+        <Button Content="{DynamicResource UiTestReport}" Click="TestIssueReport_Click" Style="{StaticResource SoftButton}" Margin="0,0,8,8"/>
+      </WrapPanel>
+    </Expander>
+
+   </StackPanel>
+  </Border>
+ </StackPanel>
+</ScrollViewer></TabItem></TabControl>
+        </Grid>
+    </Grid>
+</Window>

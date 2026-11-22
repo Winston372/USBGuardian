@@ -1,0 +1,192 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+  <!-- Design-time fallbacks only. UiPreferences overwrites them at startup and on theme/language changes. -->
+  <SolidColorBrush x:Key="CanvasBrush" Color="#F8F9FA" />
+  <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="SubtleBrush" Color="#F3F4F6" />
+  <SolidColorBrush x:Key="InputBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="TextBrush" Color="#202329" />
+  <SolidColorBrush x:Key="MutedTextBrush" Color="#5E6570" />
+  <SolidColorBrush x:Key="BorderBrush" Color="#DEE2E7" />
+  <SolidColorBrush x:Key="AccentBrush" Color="#155EA2" />
+  <SolidColorBrush x:Key="AccentTextBrush" Color="#155EA2" />
+  <SolidColorBrush x:Key="SoftButtonBrush" Color="#F2F4F6" />
+  <SolidColorBrush x:Key="SoftButtonTextBrush" Color="#2D4359" />
+  <SolidColorBrush x:Key="WarningLightBrush" Color="#FCF1E0" />
+  <SolidColorBrush x:Key="WarningTextBrush" Color="#945908" />
+  <SolidColorBrush x:Key="SuccessLightBrush" Color="#E7F4EE" />
+  <SolidColorBrush x:Key="ToastBackgroundBrush" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="ToastBorderBrush" Color="#D4DDE7" />
+  <SolidColorBrush x:Key="ToastTextBrush" Color="#202329" />
+  <SolidColorBrush x:Key="NotificationInfoBrush" Color="#2B669C" />
+  <SolidColorBrush x:Key="NotificationInfoTintBrush" Color="#E8F0F8" />
+  <SolidColorBrush x:Key="NotificationCautionBrush" Color="#A35A0B" />
+  <SolidColorBrush x:Key="NotificationCautionTintBrush" Color="#FFF2DE" />
+  <SolidColorBrush x:Key="NotificationCriticalBrush" Color="#B43B43" />
+  <SolidColorBrush x:Key="NotificationCriticalTintBrush" Color="#FBE9EA" />
+  <SolidColorBrush x:Key="SidebarBrush" Color="#F4F5F7" />
+  <SolidColorBrush x:Key="NavHoverBrush" Color="#EBEEF2" />
+  <SolidColorBrush x:Key="NavSelectedBrush" Color="#E6EEF8" />
+  <SolidColorBrush x:Key="ScrollThumbBrush" Color="#A7B2BE" />
+  <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#788796" />
+  <sys:String x:Key="Ui001" xml:space="preserve">USB 裝置管理</sys:String>
+  <sys:String x:Key="Ui002" xml:space="preserve"></sys:String>
+  <sys:String x:Key="Ui003" xml:space="preserve">●   準備監控</sys:String>
+  <sys:String x:Key="Ui004" xml:space="preserve"></sys:String>
+  <sys:String x:Key="Ui005" xml:space="preserve">選單</sys:String>
+  <sys:String x:Key="Ui006" xml:space="preserve">首頁</sys:String>
+  <sys:String x:Key="Ui007" xml:space="preserve">檢查 USB</sys:String>
+  <sys:String x:Key="Ui008" xml:space="preserve">我的裝置</sys:String>
+  <sys:String x:Key="Ui009" xml:space="preserve">歷史紀錄</sys:String>
+  <sys:String x:Key="Ui010" xml:space="preserve">設定</sys:String>
+  <sys:String x:Key="Ui011" xml:space="preserve">版本 3.5.4</sys:String>
+  <sys:String x:Key="Ui012" xml:space="preserve">查看最近的 USB 連接與檢查紀錄</sys:String>
+  <sys:String x:Key="Ui013" xml:space="preserve">正在初始化監控...</sys:String>
+  <sys:String x:Key="Ui014" xml:space="preserve">僅在裝置事件發生時執行快速分析</sys:String>
+  <sys:String x:Key="Ui015" xml:space="preserve">USB 插入提醒</sys:String>
+  <sys:String x:Key="Ui016" xml:space="preserve">沒有未處理的提醒</sys:String>
+  <sys:String x:Key="Ui017" xml:space="preserve"></sys:String>
+  <sys:String x:Key="Ui018" xml:space="preserve">查看裝置</sys:String>
+  <sys:String x:Key="Ui019" xml:space="preserve">最近活動</sys:String>
+  <sys:String x:Key="Ui020" xml:space="preserve">裝置統計</sys:String>
+  <sys:String x:Key="Ui021" xml:space="preserve">USB 磁碟</sys:String>
+  <sys:String x:Key="Ui022" xml:space="preserve">Windows 裝置項目</sys:String>
+  <sys:String x:Key="Ui023" xml:space="preserve">提醒</sys:String>
+  <sys:String x:Key="Ui024" xml:space="preserve">檢查 USB</sys:String>
+  <sys:String x:Key="Ui025" xml:space="preserve">檔案清單</sys:String>
+  <sys:String x:Key="Ui026" xml:space="preserve">瀏覽 USB 檔案，不會開啟或執行檔案</sys:String>
+  <sys:String x:Key="Ui027" xml:space="preserve">載入檔案</sys:String>
+  <sys:String x:Key="Ui028" xml:space="preserve">Defender 掃描</sys:String>
+  <sys:String x:Key="Ui029" xml:space="preserve">檔案與資料夾</sys:String>
+  <sys:String x:Key="Ui030" xml:space="preserve">檔案資訊</sys:String>
+  <sys:String x:Key="Ui031" xml:space="preserve">選取左側檔案以查看資訊</sys:String>
+  <sys:String x:Key="Ui032" xml:space="preserve">尚未檢視</sys:String>
+  <sys:String x:Key="Ui033" xml:space="preserve">預覽所選檔案</sys:String>
+  <sys:String x:Key="Ui034" xml:space="preserve">檔案預覽</sys:String>
+  <sys:String x:Key="Ui035" xml:space="preserve">尚未選取檔案</sys:String>
+  <sys:String x:Key="Ui036" xml:space="preserve">請先選取檔案</sys:String>
+  <sys:String x:Key="Ui037" xml:space="preserve">受限環境</sys:String>
+  <sys:String x:Key="Ui038" xml:space="preserve">檔案類型</sys:String>
+  <sys:String x:Key="Ui039" xml:space="preserve">尚未預覽</sys:String>
+  <sys:String x:Key="Ui040" xml:space="preserve">選取檔案後，這裡會顯示格式與預覽結果</sys:String>
+  <sys:String x:Key="Ui041" xml:space="preserve">內容預覽</sys:String>
+  <sys:String x:Key="Ui042" xml:space="preserve">文字內容（唯讀）</sys:String>
+  <sys:String x:Key="Ui043" xml:space="preserve">尚無內容可顯示</sys:String>
+  <sys:String x:Key="Ui044" xml:space="preserve">支援 JPG、PNG、GIF、BMP 圖片</sys:String>
+  <sys:String x:Key="Ui045" xml:space="preserve">檔案技術資訊（SHA-256、HEX）</sys:String>
+  <sys:String x:Key="Ui046" xml:space="preserve">檔案 SHA-256 指紋</sys:String>
+  <sys:String x:Key="Ui047" xml:space="preserve">尚無資料</sys:String>
+  <sys:String x:Key="Ui048" xml:space="preserve">HEX（最多 2 KB，供進階使用者檢查）</sys:String>
+  <sys:String x:Key="Ui049" xml:space="preserve">我的裝置</sys:String>
+  <sys:String x:Key="Ui050" xml:space="preserve">正在讀取裝置清單…</sys:String>
+  <sys:String x:Key="Ui051" xml:space="preserve">未更新</sys:String>
+  <sys:String x:Key="Ui052" xml:space="preserve">依來源和用途整理裝置</sys:String>
+  <sys:String x:Key="Ui053" xml:space="preserve">重新查詢</sys:String>
+  <sys:String x:Key="Ui054" xml:space="preserve">裝置</sys:String>
+  <sys:String x:Key="Ui055" xml:space="preserve">全部狀態</sys:String>
+  <sys:String x:Key="Ui056" xml:space="preserve">需要確認</sys:String>
+  <sys:String x:Key="Ui057" xml:space="preserve">本次新增</sys:String>
+  <sys:String x:Key="Ui058" xml:space="preserve">已記住</sys:String>
+  <sys:String x:Key="Ui059" xml:space="preserve">已標記不信任</sys:String>
+  <sys:String x:Key="Ui060" xml:space="preserve">全部類別</sys:String>
+  <sys:String x:Key="Ui061" xml:space="preserve">音訊與耳機</sys:String>
+  <sys:String x:Key="Ui062" xml:space="preserve">藍牙裝置</sys:String>
+  <sys:String x:Key="Ui063" xml:space="preserve">鍵盤與滑鼠</sys:String>
+  <sys:String x:Key="Ui064" xml:space="preserve">儲存與讀卡裝置</sys:String>
+  <sys:String x:Key="Ui065" xml:space="preserve">相機與影像</sys:String>
+  <sys:String x:Key="Ui066" xml:space="preserve">網路介面</sys:String>
+  <sys:String x:Key="Ui067" xml:space="preserve">USB 控制器與集線器</sys:String>
+  <sys:String x:Key="Ui068" xml:space="preserve">其他輸入裝置（HID）</sys:String>
+  <sys:String x:Key="Ui069" xml:space="preserve">其他裝置</sys:String>
+  <sys:String x:Key="Ui070" xml:space="preserve">搜尋裝置名稱</sys:String>
+  <sys:String x:Key="Ui071" xml:space="preserve">隱藏系統項目</sys:String>
+  <sys:String x:Key="Ui072" xml:space="preserve">尚無裝置資料</sys:String>
+  <sys:String x:Key="Ui073" xml:space="preserve">裝置資訊</sys:String>
+  <sys:String x:Key="Ui074" xml:space="preserve">選取裝置</sys:String>
+  <sys:String x:Key="Ui075" xml:space="preserve">尚未選取</sys:String>
+  <sys:String x:Key="Ui076" xml:space="preserve">狀態</sys:String>
+  <sys:String x:Key="Ui077" xml:space="preserve">尚未確認</sys:String>
+  <sys:String x:Key="Ui078" xml:space="preserve">裝置狀態</sys:String>
+  <sys:String x:Key="Ui079" xml:space="preserve">請選取裝置</sys:String>
+  <sys:String x:Key="Ui080" xml:space="preserve">裝置用途</sys:String>
+  <sys:String x:Key="Ui081" xml:space="preserve">選取裝置後顯示用途</sys:String>
+  <sys:String x:Key="Ui082" xml:space="preserve">建議操作</sys:String>
+  <sys:String x:Key="Ui083" xml:space="preserve">技術資訊</sys:String>
+  <sys:String x:Key="Ui084" xml:space="preserve">裝置信任與停用</sys:String>
+  <sys:String x:Key="Ui085" xml:space="preserve">匯出觀察報告</sys:String>
+  <sys:String x:Key="Ui086" xml:space="preserve">忘記這個裝置</sys:String>
+  <sys:String x:Key="Ui087" xml:space="preserve">記住裝置</sys:String>
+  <sys:String x:Key="Ui088" xml:space="preserve">裝置名稱（可選）</sys:String>
+  <sys:String x:Key="Ui089" xml:space="preserve">標記不信任</sys:String>
+  <sys:String x:Key="Ui090" xml:space="preserve">取消不信任</sys:String>
+  <sys:String x:Key="Ui091" xml:space="preserve">停用 USB 儲存裝置（進階）</sys:String>
+  <sys:String x:Key="Ui092" xml:space="preserve">已停用的裝置：</sys:String>
+  <sys:String x:Key="Ui093" xml:space="preserve">重新啟用（管理員）</sys:String>
+  <sys:String x:Key="Ui094" xml:space="preserve">重要：這是接入後的人工停用，不是掃描前的系統封鎖。僅允許停用 USBSTOR 儲存介面；不會刪除檔案或停用鍵盤、網路卡及 USB 控制器。</sys:String>
+  <sys:String x:Key="Ui095" xml:space="preserve">裝置活動</sys:String>
+  <sys:String x:Key="Ui096" xml:space="preserve">此處顯示最近的裝置事件。</sys:String>
+  <sys:String x:Key="Ui097" xml:space="preserve">顯示</sys:String>
+  <sys:String x:Key="Ui098" xml:space="preserve">外觀模式</sys:String>
+  <sys:String x:Key="Ui099" xml:space="preserve">跟隨 Windows</sys:String>
+  <sys:String x:Key="Ui100" xml:space="preserve">淺色</sys:String>
+  <sys:String x:Key="Ui101" xml:space="preserve">深色</sys:String>
+  <sys:String x:Key="Ui102" xml:space="preserve">語言 / Language</sys:String>
+  <sys:String x:Key="Ui103" xml:space="preserve">繁體中文</sys:String>
+  <sys:String x:Key="Ui104" xml:space="preserve">開機啟動</sys:String>
+  <sys:String x:Key="Ui105" xml:space="preserve">登入 Windows 時啟動 USB Guardian</sys:String>
+  <sys:String x:Key="Ui106" xml:space="preserve"></sys:String>
+  <sys:String x:Key="Ui107" xml:space="preserve">其他設定</sys:String>
+  <sys:String x:Key="Ui108" xml:space="preserve">使用須知</sys:String>
+  <sys:String x:Key="Ui109" xml:space="preserve">效能資訊</sys:String>
+  <sys:String x:Key="Ui110" xml:space="preserve">一般通知測試</sys:String>
+  <sys:String x:Key="UiAdditionalFilters" xml:space="preserve">其他篩選</sys:String>
+  <sys:String x:Key="UiToastOpen" xml:space="preserve">開啟 USB Guardian</sys:String>
+  <sys:String x:Key="UiDevBrowseTitle" xml:space="preserve">裝置清單</sys:String>
+  <sys:String x:Key="UiDevBrowseHint" xml:space="preserve">選取裝置查看詳細資訊</sys:String>
+  <sys:String x:Key="UiDevDetailTitle" xml:space="preserve">詳細資訊</sys:String>
+  <sys:String x:Key="UiDeviceSelectFirst" xml:space="preserve">請在左側選取裝置</sys:String>
+  <sys:String x:Key="UiDeviceEmpty" xml:space="preserve">找不到符合條件的裝置</sys:String>
+  <sys:String x:Key="UiDevReviewStatus" xml:space="preserve">狀態</sys:String>
+  <sys:String x:Key="UiDevMoreDetails" xml:space="preserve">技術資訊</sys:String>
+  <sys:String x:Key="UiDevManageTitle" xml:space="preserve">裝置操作</sys:String>
+  <sys:String x:Key="UiDevNicknameLabel" xml:space="preserve">自訂名稱（可選）</sys:String>
+  <sys:String x:Key="UiOriginFilterTitle" xml:space="preserve">裝置來源（依 Windows 資訊推定）</sys:String>
+  <sys:String x:Key="UiOriginAll" xml:space="preserve">全部來源</sys:String>
+  <sys:String x:Key="UiOriginNew" xml:space="preserve">本次新增</sys:String>
+  <sys:String x:Key="UiOriginUsb" xml:space="preserve">可能為外接 USB</sys:String>
+  <sys:String x:Key="UiOriginSystem" xml:space="preserve">系統或驅動項目</sys:String>
+  <sys:String x:Key="UiOriginUnknown" xml:space="preserve">來源不明</sys:String>
+  <sys:String x:Key="UiPostReviewTitle" xml:space="preserve">檔案處理</sys:String>
+  <sys:String x:Key="UiDeleteReviewed" xml:space="preserve">隔離檔案</sys:String>
+  <sys:String x:Key="UiManageDevice" xml:space="preserve">查看所屬裝置</sys:String>
+  <sys:String x:Key="UiPostReviewHint" xml:space="preserve">隔離後可在活動紀錄還原。</sys:String>
+  <sys:String x:Key="UiAlertCenter" xml:space="preserve">待處理提醒</sys:String>
+  <sys:String x:Key="UiReviewAlert" xml:space="preserve">查看</sys:String>
+  <sys:String x:Key="UiMarkRead" xml:space="preserve">標為已讀</sys:String>
+  <sys:String x:Key="UiQuarantineTitle" xml:space="preserve">隔離檔案</sys:String>
+  <sys:String x:Key="UiRestoreQuarantine" xml:space="preserve">還原檔案</sys:String>
+  <sys:String x:Key="UiDeleteQuarantine" xml:space="preserve">永久刪除</sys:String>
+  <sys:String x:Key="UiRefreshQuarantine" xml:space="preserve">更新</sys:String>
+  <sys:String x:Key="UiTechnicalLog" xml:space="preserve">詳細事件紀錄</sys:String>
+  <sys:String x:Key="UiScanIdle" xml:space="preserve">尚未掃描</sys:String>
+  <sys:String x:Key="UiNoUsbConnected" xml:space="preserve">未偵測到可檢查的 USB 磁碟</sys:String>
+  <sys:String x:Key="UiToastTestCaution" xml:space="preserve">注意通知測試</sys:String>
+  <sys:String x:Key="UiToastTestCritical" xml:space="preserve">高優先通知測試</sys:String>
+  <sys:String x:Key="UiNotificationTools" xml:space="preserve">通知測試</sys:String>
+  <sys:String x:Key="UiDeviceActionsTab">裝置操作</sys:String>
+  <sys:String x:Key="UiOpenDeviceActions">開啟裝置操作</sys:String>
+  <sys:String x:Key="UiChooseManagedDevice">選擇要操作的裝置</sys:String>
+  <sys:String x:Key="UiChooseManagedHint">請從上方選擇裝置。裝置停用需要管理員確認。</sys:String>
+  <sys:String x:Key="UiChooseFromDevices">查看裝置清單</sys:String>
+  <sys:String x:Key="UiEventClickHint">點選紀錄查看詳情</sys:String>
+  <sys:String x:Key="UiEventDetailHeader">紀錄詳情</sys:String>
+  <sys:String x:Key="UiSelectAlert">點選左側提醒</sys:String>
+  <sys:String x:Key="Ui352TestLong" xml:space="preserve">測試長篇通知</sys:String>
+  <sys:String x:Key="UiHomeEventsTooltip" xml:space="preserve">選取紀錄可看摘要；滑鼠移上去可快速操作。</sys:String>
+  <sys:String x:Key="UiHomeCheckAction" xml:space="preserve">檢查 USB</sys:String>
+  <sys:String x:Key="UiHomeDeviceAction" xml:space="preserve">裝置操作</sys:String>
+  <sys:String x:Key="UiHomeFullDetails" xml:space="preserve">完整紀錄</sys:String>
+  <sys:String x:Key="UiReportProblem">回報問題</sys:String>
+  <sys:String x:Key="UiTestReport">測試錯誤回報視窗</sys:String>
+</ResourceDictionary>

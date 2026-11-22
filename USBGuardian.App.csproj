@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>3.5.9</Version>
+    <ApplicationIcon>Assets\USBGuardian.ico</ApplicationIcon>
+    <AssemblyName>USBGuardian.App</AssemblyName>
+    <RootNamespace>USBGuardian.App</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\USBGuardian.ico" />
+    <Resource Include="Assets\USBGuardian.png" />
+    <Content Include="Assets\USBGuardian.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <Content Include="UI\Locales\*.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <Content Include="FirstUseNotice.en.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+    <Content Include="FirstUseNotice.zh-TW.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+  <Target Name="StageAnalyzerDebug" AfterTargets="Build" Condition="Exists('..\USBGuardian.Analyzer\USBGuardian.Analyzer.csproj')">
+    <MSBuild Projects="..\USBGuardian.Analyzer\USBGuardian.Analyzer.csproj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <ItemGroup>
+      <_SafeLabFiles Include="..\USBGuardian.Analyzer\bin\$(Configuration)\net10.0-windows\USBGuardian.Analyzer.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(TargetDir)SafeLab" />
+    <Copy SourceFiles="@(_SafeLabFiles)" DestinationFolder="$(TargetDir)SafeLab" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="StageAnalyzerPublish" AfterTargets="Publish" Condition="Exists('..\USBGuardian.Analyzer\USBGuardian.Analyzer.csproj')">
+    <MSBuild Projects="..\USBGuardian.Analyzer\USBGuardian.Analyzer.csproj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <ItemGroup>
+      <_SafeLabPublishFiles Include="..\USBGuardian.Analyzer\bin\$(Configuration)\net10.0-windows\USBGuardian.Analyzer.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(PublishDir)SafeLab" />
+    <Copy SourceFiles="@(_SafeLabPublishFiles)" DestinationFolder="$(PublishDir)SafeLab" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

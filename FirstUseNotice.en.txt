@@ -1,0 +1,71 @@
+USB Guardian | Usage Information, Risks and Terms
+Document version: V3.2 RC (2026-11-18)
+
+Please read the entire document before using USB Guardian. This application is a supplementary USB event-monitoring, inspection and decision-support tool. It is not a guarantee against malware, data loss or malicious hardware. Nothing in this notice excludes legal rights or liabilities that cannot lawfully be excluded.
+
+1. PURPOSE AND FUNCTIONS
+1. While running, USB Guardian observes device and drive events reported by Windows and can show notices, event history and limited file-name risk indicators.
+2. Users may browse selected USB or removable drives, read filenames and metadata, and inspect a limited set of entries. A quick inspection is not a full-device or comprehensive malware scan.
+3. Suspicious extensions, shortcuts and double extensions are indicators only; legitimate files can produce warnings, and a missing warning is not proof of safety.
+4. SafeLab uses a restricted Windows AppContainer process to preview some text, images and metadata. It does not execute unknown applications, scripts or macros. AppContainer is not a full virtual machine and cannot eliminate all security vulnerabilities.
+5. Windows Defender scans, quarantine, restore and eligible-device disable or re-enable actions require separate user decisions. A successful preview or completed scan command is not a clean malware verdict.
+
+2. IMPORTANT USB SECURITY LIMITATIONS
+1. USB Guardian reacts after Windows detects a device. A malicious keyboard, network adapter or composite device may already be active before the notification. The application cannot ensure zero input, network traffic or access before scanning.
+2. Device names, vendor/product identifiers and PnP IDs can be forged. Marking an item familiar or trusted is a local preference, not hardware authentication.
+3. No notification, successful preview or completed Defender command can guarantee the absence of malware, firmware attacks or data exfiltration.
+4. Do not rely on this application as your only protection, or execute unknown executables, shortcuts, scripts or macros on your normal Windows desktop.
+
+3. MICROSOFT DEFENDER AND THIRD-PARTY SERVICES
+1. A requested Defender scan is performed by Windows/Microsoft Defender under its own configuration. Depending on its settings, Defender may detect, quarantine, remove or upload suspicious samples to Microsoft.
+2. The app may report that a scan was requested or that a command finished. It does not guarantee the scope, completeness or outcome of Microsoft's security assessment.
+3. Review actual detections in Windows Security and seek help if you are unsure what action is appropriate.
+
+4. QUARANTINE, RESTORE AND PERMANENT REMOVAL
+1. Quarantine is an explicit user action after preview and is limited to eligible ordinary files on Windows Removable drives, up to approximately 24 MiB. Filename warnings do not trigger automatic quarantine.
+2. The app attempts to verify the file, create an encrypted copy and save recovery metadata before attempting to remove the source file. Removal, unplugging, power loss, concurrent changes, file-system errors or crashes can cause partial operations or failed recovery.
+3. Encryption uses AES-GCM with a key protected by Windows DPAPI in the current user's profile. This does not protect against every compromise of that account, profile loss or storage corruption.
+4. Restoring requires the original drive and writable folder to be available. A changed path, existing filename or new Windows profile may make restoration impossible.
+5. Permanently removing a quarantined copy cannot be undone through USB Guardian and does not certify forensic erasure. Back up valuable data separately.
+
+5. DEVICE DISABLE AND RE-ENABLE
+1. Marking a device untrusted changes only the local record; it does not block hardware, networking or file access by itself.
+2. Manual device disabling is limited to eligible and uniquely identified USBSTOR storage interfaces, after explicit confirmation and Windows administrator authorization. The app does not offer automatic disabling for keyboards, mice, USB hubs, general HID or network adapters.
+3. Disabling an actively used drive can interrupt operations and corrupt or lose data. Stop writes and back up your work first.
+4. A successful command does not always mean that a device can no longer operate. The application attempts to re-query Windows, but unplugging, restarting or using Device Manager may be necessary. Re-enable may also fail.
+5. This is not a system-wide deny-before-connection policy and does not guarantee that all interfaces of a composite device are disabled.
+
+6. USER SAFETY RESPONSIBILITIES
+1. Maintain up-to-date Windows security software and backups. Do not test with a drive holding the only copy of important files.
+2. Before changing files or device status, verify the drive letter, source, file path and likely consequences. Cancel and seek help if uncertain.
+3. Use the application only on devices and data you own or are authorized to administer.
+4. Test using disposable drives and harmless sample filenames, not real malware.
+
+7. PRIVACY AND LOCAL DATA
+1. Inspection does not require an account or intentionally upload previews to a USB Guardian server. Windows, Defender, cloud backup and other installed software may process or transmit data under their own settings.
+2. LocalAppData may contain device labels or identifiers, timestamps, notification records, preferences, consent records, quarantined files and encryption material. Filenames and paths can contain personal or sensitive information.
+3. Review exported reports before sharing them. You control any distribution of exported files.
+4. Uninstalling the application may not delete LocalAppData. Before clearing it, recover or back up quarantined files and records you wish to keep.
+
+8. PERFORMANCE, COMPATIBILITY AND SUPPORT
+1. Functionality varies with Windows 10/11 version, drivers, privileges and hardware; Windows Home and Pro do not offer identical policies.
+2. Monitoring, scans and previews consume some system resources and may cause temporary delays. The application does not promise uninterrupted operation or zero overhead.
+3. Ongoing updates, individual support, compatibility with all computers or continuous availability are not guaranteed.
+
+9. OPEN-SOURCE LICENSE AND THIRD-PARTY RIGHTS
+1. Source code is licensed under the included LICENSE; redistributors and modifiers must comply with it and any applicable third-party licenses.
+2. Windows and Microsoft Defender belong to their respective owners. USB Guardian is not represented as Microsoft-certified security software.
+
+10. WARRANTIES, LIABILITY AND LEGAL RIGHTS
+1. The application is provided as-is as a supplementary educational and inspection tool, without an assurance that it detects every threat, preserves every file or suits a specific purpose.
+2. Risks include false positives and negatives, data damage, unavailable devices, scanning side effects, restoration failure and conflicts with other software.
+3. To the extent permitted by applicable law, no extra warranties are offered beyond legally required obligations. Nothing here limits liability for intentional wrongdoing, gross negligence, mandatory consumer-protection obligations or any other responsibility that applicable law prohibits excluding.
+4. If a term is unenforceable, other lawful independent terms remain effective. Users retain statutory rights.
+5. This document does not guarantee that a developer has no legal exposure; applicable law and facts govern disputes.
+
+11. ACKNOWLEDGEMENT AND CHANGES
+1. Scroll to the end, review the limitations and consequences, and check the agreement box only if you understand and wish to proceed. Scrolling is not proof that the text was actually read.
+2. On acceptance, USB Guardian stores the document version and digest, time of acceptance and installation directory locally, to decide whether renewed acknowledgement is needed. This is not a tamper-proof digital signature.
+3. Declining exits without starting monitoring. A material change to this document requires acceptance again.
+
+REMINDER: USB Guardian cannot guarantee pre-connection blocking or complete malware protection. Quarantine and device disabling may result in data loss. Back up important files first.
